@@ -272,6 +272,26 @@ class InputMethods
         
         return "ok";
     }
+
+    public function ttn($userid)
+    {
+        global $param;
+        $raw_data = file_get_contents('php://input');
+        $data = json_decode($raw_data, true);
+
+        if ($data === null)
+        {
+            return "Error parsing JSON body: " . json_last_error();
+        }
+
+        $payload_fields = $data["payload_fields"];
+        $device = $data["app_id"];
+        $time = time();
+
+        $this->process_node($userid,$time,$device,$payload_fields);
+
+        return "ok";
+    }
     
     // ------------------------------------------------------------------------------------
     // Register and process the inputs for the node given

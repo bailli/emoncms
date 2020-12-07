@@ -48,9 +48,23 @@ function input_controller()
     if ($session["write"])
     {
         // ------------------------------------------------------------------------
+        // input/ttn
+        // ------------------------------------------------------------------------
+        if ($route->action == "ttn") {
+            $result = $inputMethods->ttn($session['userid']);
+            if ($result=="ok") {
+                if ($param->exists('fulljson')) $result = '{"success": true}';
+                if ($param->sha256base64_response) $result = $param->sha256base64_response;
+            } else {
+                $result = '{"success": false, "message": "'.str_replace("\"","'",$result).'"}';
+                $log = new EmonLogger(__FILE__);
+                $log->error($result." for User: ".$session['userid']);
+            }
+        }
+        // ------------------------------------------------------------------------
         // input/post
         // ------------------------------------------------------------------------
-        if ($route->action == "post") {
+        else if ($route->action == "post") {
             $result = $inputMethods->post($session['userid']);
             if ($result=="ok") {
                 if ($param->exists('fulljson')) $result = '{"success": true}';
