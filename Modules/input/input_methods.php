@@ -284,8 +284,14 @@ class InputMethods
             return "Error parsing JSON body: " . json_last_error();
         }
 
-        $payload_fields = $data["payload_fields"];
-        $device = $data["app_id"];
+        if (array_key_exists("payload_fields", $data)) {
+            $payload_fields = $data["payload_fields"];
+            $device = $data["app_id"];
+        } else {
+            $device = $data["end_device_ids"]["application_ids"]["application_id"];
+            $payload_fields = $data["uplink_message"]["decoded_payload"];
+        }
+
         $time = time();
 
         $this->process_node($userid,$time,$device,$payload_fields);
